@@ -28,7 +28,14 @@ export function DownloadSection() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-white/90">Stable Release (v13.6.0)</h3>
+                  <a
+                    href="https://github.com/RA-L-PH/ApKs/releases/tag/latest"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    <h3 className="text-sm font-semibold text-white/90">Stable Release (v13.6.0)</h3>
+                  </a>
                   <p className="text-[10px] text-emerald-400/80 font-mono mt-0.5">latest stable release from GitHub</p>
                 </div>
               </div>
@@ -43,7 +50,7 @@ export function DownloadSection() {
                     </p>
                   </div>
                   <a
-                    href="https://github.com/RA-L-PH/ApKs/releases/latest"
+                    href="https://github.com/RA-L-PH/ApKs/releases/download/latest/ApKs-v13.6.0.r1093.f635161c-release.apk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-shrink-0 py-2 px-4 bg-white/10 hover:bg-white/15 text-[11px] font-bold text-white/90 rounded-lg transition-colors border border-white/[0.04] text-center"
@@ -61,7 +68,7 @@ export function DownloadSection() {
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <a
-                    href="https://github.com/RA-L-PH/ApKs/releases/latest"
+                    href="https://github.com/RA-L-PH/ApKs/releases/download/latest/ApKs-v13.6.0.r1093.f635161c-arm64-v8a-release.apk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
@@ -69,7 +76,7 @@ export function DownloadSection() {
                     arm64-v8a
                   </a>
                   <a
-                    href="https://github.com/RA-L-PH/ApKs/releases/latest"
+                    href="https://github.com/RA-L-PH/ApKs/releases/download/latest/ApKs-v13.6.0.r1093.f635161c-armeabi-v7a-release.apk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
@@ -77,7 +84,7 @@ export function DownloadSection() {
                     armeabi-v7a
                   </a>
                   <a
-                    href="https://github.com/RA-L-PH/ApKs/releases/latest"
+                    href="https://github.com/RA-L-PH/ApKs/releases/download/latest/ApKs-v13.6.0.r1093.f635161c-x86-release.apk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
@@ -85,7 +92,7 @@ export function DownloadSection() {
                     x86
                   </a>
                   <a
-                    href="https://github.com/RA-L-PH/ApKs/releases/latest"
+                    href="https://github.com/RA-L-PH/ApKs/releases/download/latest/ApKs-v13.6.0.r1093.f635161c-x86_64-release.apk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
