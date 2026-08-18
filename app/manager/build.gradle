@@ -122,7 +122,9 @@ afterEvaluate {
 
 android.applicationVariants.configureEach { variant ->
     variant.outputs.configureEach {
-        outputFileName = "ApKs-v${variant.versionName}-${variant.name}.apk"
+        def abiFilter = filters.find { it.filterType == 'ABI' }
+        def abiSuffix = abiFilter ? "-${abiFilter.identifier}" : ''
+        outputFileName = "ApKs-v${variant.versionName}${abiSuffix}-${variant.name}.apk"
 
         variant.assembleProvider.get().doLast {
             def outDir = new File(rootDir, "out")

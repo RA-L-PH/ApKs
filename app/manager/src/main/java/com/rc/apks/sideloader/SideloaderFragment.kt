@@ -93,6 +93,7 @@ class SideloaderFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (filesList.isNotEmpty()) return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
             startScan()
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R &&
@@ -174,10 +175,10 @@ class SideloaderFragment : Fragment() {
 
     private fun startScan() {
         if (cachedFilesList != null) {
-            val currentInstalled = filesList.associateBy({ it.packageName }, { it.isInstalled })
+            val oldInstalled = cachedFilesList!!.associateBy({ it.packageName }, { it.isInstalled })
             filesList.clear()
             cachedFilesList!!.forEach { file ->
-                file.isInstalled = currentInstalled[file.packageName] ?: file.isInstalled
+                file.isInstalled = oldInstalled[file.packageName] ?: file.isInstalled
             }
             filesList.addAll(cachedFilesList!!)
             filterList()
@@ -191,9 +192,13 @@ class SideloaderFragment : Fragment() {
 
         lifecycleScope.launch {
             val scanned = scanStorage(requireContext())
-            val currentInstalled = filesList.associateBy({ it.packageName }, { it.isInstalled })
+            // Merge installed state from old list into new scan results
+            val oldInstalled = filesList.associateBy({ it.packageName }, { it.isInstalled })
             scanned.forEach { file ->
-                file.isInstalled = currentInstalled[file.packageName] ?: file.isInstalled
+                val knownState = oldInstalled[file.packageName]
+                if (knownState == true) {
+                    file.isInstalled = true
+                }
             }
             filesList.clear()
             filesList.addAll(scanned)
@@ -215,6 +220,14 @@ class SideloaderFragment : Fragment() {
         val pm = context.packageManager
         val scannedFiles = mutableSetOf<File>()
 
+        // Build set of installed packages for reliable lookup
+        val installedPackages = try {
+            pm.getInstalledPackages(0).map { it.packageName }.toSet()
+        } catch (e: Exception) {
+            emptySet()
+        }
+        android.util.Log.d("SideloaderScan", "Installed packages: ${installedPackages.size}")
+
         for (dir in pathsToScan) {
             if (dir != null && dir.exists() && dir.isDirectory) {
                 scanDirRecursive(dir, scannedFiles)
@@ -232,12 +245,8 @@ class SideloaderFragment : Fragment() {
                         val appLabel = pm.getApplicationLabel(appInfo).toString()
                         val appIcon = pm.getApplicationIcon(appInfo)
 
-                        val isAppInstalled = try {
-                            val installedInfo = pm.getPackageInfo(info.packageName, 0)
-                            installedInfo != null
-                        } catch (e: PackageManager.NameNotFoundException) {
-                            false
-                        }
+                        val isAppInstalled = installedPackages.contains(info.packageName)
+                        android.util.Log.d("SideloaderScan", "${info.packageName} installed=$isAppInstalled")
 
                         result.add(
                             SideloadFile(
@@ -389,8 +398,9 @@ class SideloaderFragment : Fragment() {
 
             binding.progressBar.visibility = View.GONE
             if (success) {
-                sideloadFile.isInstalled = true
-                cachedFilesList = null
+                filesList.find { it.packageName == sideloadFile.packageName }?.isInstalled = true
+                filteredList.find { it.packageName == sideloadFile.packageName }?.isInstalled = true
+                cachedFilesList?.find { it.packageName == sideloadFile.packageName }?.isInstalled = true
                 adapter.notifyDataSetChanged()
                 Toast.makeText(context, "Installation successful!", Toast.LENGTH_LONG).show()
             } else {
@@ -411,7 +421,7 @@ class SideloaderFragment : Fragment() {
             val success = withContext(Dispatchers.IO) {
                 try {
                     val process = Shizuku.newProcess(
-                        arrayOf("pm", "uninstall", sideloadFile.packageName),
+                        arrayOf("pm", "uninstall", "--user", "current", sideloadFile.packageName),
                         null,
                         null
                     )
@@ -431,8 +441,9 @@ class SideloaderFragment : Fragment() {
 
             binding.progressBar.visibility = View.GONE
             if (success) {
-                sideloadFile.isInstalled = false
-                cachedFilesList = null
+                filesList.find { it.packageName == sideloadFile.packageName }?.isInstalled = false
+                filteredList.find { it.packageName == sideloadFile.packageName }?.isInstalled = false
+                cachedFilesList?.find { it.packageName == sideloadFile.packageName }?.isInstalled = false
                 adapter.notifyDataSetChanged()
                 Toast.makeText(context, "Uninstalled successfully!", Toast.LENGTH_LONG).show()
             } else {
@@ -444,7 +455,7 @@ class SideloaderFragment : Fragment() {
     private fun installApkViaShizuku(file: File): Boolean {
         return try {
             val output = runProcessWithInput(
-                arrayOf("pm", "install", "-r", "-g", "-S", file.length().toString()),
+                arrayOf("pm", "install", "--user", "current", "-r", "-g", "-S", file.length().toString()),
                 file
             )
             android.util.Log.d("SideloaderInstall", "pm install: $output")
@@ -485,7 +496,7 @@ class SideloaderFragment : Fragment() {
 
             // Step 1: Create install session
             val createOutput = runProcess(
-                arrayOf("pm", "install-create", "-r", "-g", "-S", totalSize.toString())
+                arrayOf("pm", "install-create", "--user", "current", "-r", "-g", "-S", totalSize.toString())
             )
             android.util.Log.d("SideloaderInstall", "install-create: $createOutput")
 
