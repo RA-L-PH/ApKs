@@ -20,10 +20,10 @@
     <string name="home_adb_dialog_view_command_button_send">Send</string>
 
     <!-- Home - Wireless Adb -->
-    <string name="home_wireless_adb_title"><![CDATA[Start via Wireless debugging]]></string>
-    <string name="home_wireless_adb_description"><![CDATA[On Android 11 or above, you can enable Wireless debugging and start ApKs directly from your device, without connecting to a computer.<p>Please view the step-by-step guide first.]]></string>
+    <string name="home_wireless_adb_title"><![CDATA[Wireless Setup]]></string>
+    <string name="home_wireless_adb_description"><![CDATA[<b>Step 1:</b> Open <a href="https://developer.android.com/studio/debug/dev-options">Developer options</a> and enable <b>Wireless debugging</b>.<p><b>Step 2:</b> Tap <b>Pair device with pairing code</b> and enter the code below.<p><b>Step 3:</b> Tap <b>Start</b> to connect.]]></string>
     <string name="home_wireless_adb_description_pre_11"><![CDATA[Before Android 11, connecting to a computer is required to enable Wireless debugging.]]></string>
-    <string name="home_wireless_adb_view_guide_button">Step-by-step guide</string>
+    <string name="home_wireless_adb_view_guide_button">Open Developer Options</string>
 
     <!-- Adb -->
     <string name="dialog_adb_discovery">Searching for wireless debugging service</string>
@@ -157,6 +157,7 @@ With %1$s, in any terminal app, you can connect to and interact with the shell r
     <!-- Navigation -->
     <string name="nav_apks">APKs</string>
     <string name="nav_server">Server</string>
+    <string name="follow_system">Follow system</string>
 
     <!-- Server - Simple Start -->
     <string name="server_start_title">Start ApKs Server</string>

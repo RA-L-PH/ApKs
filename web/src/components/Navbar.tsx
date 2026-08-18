@@ -12,6 +12,7 @@ export function Navbar() {
 
   return (
     <nav
+      style={{ paddingTop: 'var(--banner-height, 0px)' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/[0.06]'
@@ -22,7 +23,6 @@ export function Navbar() {
         {/* Left: Logo + Name */}
         <a href="#" className="flex items-center gap-2.5 group">
           <img src="/icon.png" alt="" className="w-14 h-14 invert" />
-          <span className="text-sm font-semibold text-white/80">ApKs</span>
         </a>
 
         {/* Center: Links (desktop) */}
@@ -35,6 +35,9 @@ export function Navbar() {
           </a>
           <a href="#why" className="px-3 py-1.5 text-[13px] font-medium text-white/50 hover:text-white/90 transition-colors rounded-lg hover:bg-white/[0.04]">
             Why
+          </a>
+          <a href="#faq" className="px-3 py-1.5 text-[13px] font-medium text-white/50 hover:text-white/90 transition-colors rounded-lg hover:bg-white/[0.04]">
+            FAQ
           </a>
           <a
             href="https://keepandroidopen.org"
@@ -103,6 +106,12 @@ export function Navbar() {
           </a>
           <a href="#why" className="block py-2 text-sm text-white/60 hover:text-white/90 transition-colors" onClick={() => setMobileOpen(false)}>
             Why
+          </a>
+          <a href="#faq" className="block py-2 text-sm text-white/60 hover:text-white/90 transition-colors" onClick={() => setMobileOpen(false)}>
+            FAQ
+          </a>
+          <a href="#download" className="block py-2 text-sm text-white/60 hover:text-white/90 transition-colors" onClick={() => setMobileOpen(false)}>
+            Download
           </a>
           <a href="https://keepandroidopen.org" target="_blank" rel="noopener noreferrer" className="block py-2 text-sm text-white/60 hover:text-white/90 transition-colors">
             Keep Android Open

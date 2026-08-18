@@ -12,20 +12,20 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6">
+    <section
+      style={{ paddingTop: 'calc(var(--banner-height, 0px) + 3.5rem)' }}
+      className="relative min-h-screen flex flex-col items-center justify-between pb-8 px-6"
+    >
       {/* Subtle dot pattern */}
       <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `radial-gradient(circle, #fff 1px, transparent 1px)`,
         backgroundSize: '24px 24px'
       }} />
 
-      <div className="relative z-10 text-center max-w-2xl mx-auto">
+      <div className="relative z-10 text-center max-w-2xl mx-auto my-auto pt-8">
         {/* App icon */}
-        <div
-          className={`mb-10 mx-auto transition-all duration-1000 ${visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}`}
-          style={{ transform: `translateY(${scrollY * 0.05}px)` }}
-        >
-          <img src="/icon.png" alt="ApKs" className="w-48 h-48 mx-auto invert" />
+        <div className="mb-5 mx-auto">
+          <img src="/iconhd.png" alt="ApKs" className="w-64 h-64 mx-auto invert" />
         </div>
 
         {/* Title - bold and clear */}
@@ -64,7 +64,7 @@ export function HeroSection() {
 
       {/* Scroll hint */}
       <div
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 transition-opacity"
+        className="relative z-10 transition-opacity mt-auto pt-6"
         style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
       >
         <div className="w-5 h-8 border border-white/20 rounded-full flex justify-center pt-2">

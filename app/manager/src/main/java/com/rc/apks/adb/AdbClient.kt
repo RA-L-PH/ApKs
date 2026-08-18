@@ -113,6 +113,29 @@ class AdbClient(private val host: String, private val port: Int, private val key
         }
     }
 
+    fun pushFile(file: java.io.File, remotePath: String) {
+        val localId = 2
+        write(A_OPEN, localId, 0, "shell:cat > $remotePath")
+
+        var message = read()
+        if (message.command != A_OKAY) error("Expected A_OKAY, got ${message.command}")
+        val remoteId = message.arg0
+
+        val buffer = ByteArray(65536)
+        file.inputStream().use { input ->
+            var bytesRead: Int
+            while (input.read(buffer).also { bytesRead = it } != -1) {
+                val data = buffer.copyOf(bytesRead)
+                write(A_WRTE, localId, remoteId, data)
+                message = read()
+                if (message.command != A_OKAY) error("Expected A_OKAY after write, got ${message.command}")
+            }
+        }
+
+        write(A_CLSE, localId, remoteId)
+        message = read()
+    }
+
     private fun write(command: Int, arg0: Int, arg1: Int, data: ByteArray? = null) = write(AdbMessage(command, arg0, arg1, data))
 
     private fun write(command: Int, arg0: Int, arg1: Int, data: String) = write(AdbMessage(command, arg0, arg1, data))

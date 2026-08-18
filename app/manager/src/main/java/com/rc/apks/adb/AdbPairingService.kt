@@ -23,6 +23,8 @@ class AdbPairingService : Service() {
     companion object {
 
         const val notificationChannel = "adb_pairing"
+        const val ACTION_PAIRING_RESULT = "com.rc.apks.PAIRING_RESULT"
+        const val EXTRA_SUCCESS = "success"
 
         private const val tag = "AdbPairingService"
 
@@ -34,7 +36,7 @@ class AdbPairingService : Service() {
         private const val stopAction = "stop"
         private const val replyAction = "reply"
         private const val remoteInputResultKey = "paring_code"
-        private const val portKey = "paring_code"
+        private const val portKey = "port"
 
         fun startIntent(context: Context): Intent {
             return Intent(context, AdbPairingService::class.java).setAction(startAction)
@@ -166,6 +168,12 @@ class AdbPairingService : Service() {
     private fun handleResult(success: Boolean, exception: Throwable?) {
         stopForeground(STOP_FOREGROUND_REMOVE)
 
+        if (success) {
+            ShizukuSettings.getPreferences().edit()
+                .putBoolean("pairing_success", true)
+                .apply()
+        }
+
         val title: String
         val text: String?
 
@@ -256,36 +264,13 @@ class AdbPairingService : Service() {
             .build()
     }
 
-    private val replyNotificationAction by unsafeLazy {
+    private fun replyNotificationAction(port: Int): Notification.Action {
         val remoteInput = RemoteInput.Builder(remoteInputResultKey).run {
             setLabel(getString(R.string.dialog_adb_pairing_paring_code))
             build()
         }
 
         val pendingIntent = PendingIntent.getForegroundService(
-            this,
-            replyRequestId,
-            replyIntent(this, -1),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            else
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        Notification.Action.Builder(
-            null,
-            getString(R.string.notification_adb_pairing_input_paring_code),
-            pendingIntent
-        )
-            .addRemoteInput(remoteInput)
-            .build()
-    }
-
-    private fun replyNotificationAction(port: Int): Notification.Action {
-        // Ensure pending intent is created
-        val action = replyNotificationAction
-
-        PendingIntent.getForegroundService(
             this,
             replyRequestId,
             replyIntent(this, port),
@@ -295,7 +280,13 @@ class AdbPairingService : Service() {
                 PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        return action
+        return Notification.Action.Builder(
+            null,
+            getString(R.string.notification_adb_pairing_input_paring_code),
+            pendingIntent
+        )
+            .addRemoteInput(remoteInput)
+            .build()
     }
 
     private val searchingNotification by unsafeLazy {

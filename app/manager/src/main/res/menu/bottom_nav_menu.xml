@@ -9,4 +9,8 @@
         android:id="@+id/nav_server"
         android:icon="@drawable/storage_24"
         android:title="@string/nav_server" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_action_settings_24dp"
+        android:title="@string/settings_title" />
 </menu>

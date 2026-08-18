@@ -8,7 +8,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rc.apks.R
-import com.rc.apks.adb.AdbPairingTutorialActivity
 import com.rc.apks.databinding.HomeItemContainerBinding
 import com.rc.apks.databinding.HomeServerStartSimpleBinding
 import com.rc.apks.starter.StarterActivity
@@ -35,7 +34,10 @@ class SimpleServerStartViewHolder(private val binding: HomeServerStartSimpleBind
     init {
         btnStartStop.setOnClickListener { v -> onStartStopClicked() }
         btnPairing.setOnClickListener { v ->
-            v.context.startActivity(Intent(v.context, AdbPairingTutorialActivity::class.java))
+            AdbPairDialogFragment().show(
+                (v.context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager
+                    ?: return@setOnClickListener
+            )
         }
     }
 

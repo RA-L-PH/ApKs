@@ -49,6 +49,14 @@ android {
     kotlinOptions {
         jvmTarget = "21"
     }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+            universalApk true
+        }
+    }
     packagingOptions {
         jniLibs {
             useLegacyPackaging true
@@ -88,8 +96,9 @@ materialThemeBuilder {
 
 def collapseReleaseResourceNames = task('collapseReleaseResourceNames').doLast {
     def aapt2 = Paths.get(project.android.sdkDirectory.path, 'build-tools', project.android.buildToolsVersion, 'aapt2')
-    def zip = Paths.get(project.buildDir.path, 'intermediates',
-            'optimized_processed_res', 'release', 'optimizeReleaseResources', 'resources-release-optimize.ap_')
+    def resourcesDir = new File(project.buildDir.path, 'intermediates/optimized_processed_res/release/optimizeReleaseResources')
+    def zip = new File(resourcesDir, 'resources-release-optimize.ap_')
+    if (!zip.exists()) return
     def optimized = new File("${zip}.opt")
     def cmd = exec {
         commandLine aapt2, 'optimize', '--collapse-resource-names',
@@ -104,14 +113,16 @@ def collapseReleaseResourceNames = task('collapseReleaseResourceNames').doLast {
 }
 
 afterEvaluate {
-    tasks.getByName('optimizeReleaseResources').finalizedBy(collapseReleaseResourceNames)
+    if (tasks.findByName('optimizeReleaseResources') != null) {
+        tasks.getByName('optimizeReleaseResources').finalizedBy(collapseReleaseResourceNames)
+    }
     tasks.getByName('preReleaseBuild').dependsOn(':shell:assembleRelease')
     tasks.getByName('preDebugBuild').dependsOn(':shell:assembleDebug')
 }
 
 android.applicationVariants.configureEach { variant ->
     variant.outputs.configureEach {
-        outputFileName = "shizuku-v${variant.versionName}-${variant.name}.apk"
+        outputFileName = "ApKs-v${variant.versionName}-${variant.name}.apk"
 
         variant.assembleProvider.get().doLast {
             def outDir = new File(rootDir, "out")
@@ -160,6 +171,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.fragment:fragment-ktx:1.8.7'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'

@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="84dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Appearance Accordion -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#27272A"
+            app:cardBackgroundColor="#161618"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/appearanceHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="?selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Appearance"
+                        android:textColor="#F4F4F5"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/appearanceArrow"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_expand_more_24"
+                        android:importantForAccessibility="no" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/appearanceContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone">
+
+                    <!-- Night Mode -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Dark theme"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnNightMode"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Follow system"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46" />
+
+                    <!-- Black Theme -->
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchBlackTheme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Pure black AMOLED theme"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:minHeight="48dp" />
+
+                    <!-- System Color -->
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchSystemColor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Use system theme color"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:minHeight="48dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Language Accordion -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#27272A"
+            app:cardBackgroundColor="#161618"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/languageHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="?selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Language"
+                        android:textColor="#F4F4F5"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/languageArrow"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_expand_more_24"
+                        android:importantForAccessibility="no" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/languageContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLanguage"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:text="Follow system"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTranslation"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Participate in translation"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46"
+                        app:icon="@drawable/ic_outline_open_in_new_24"
+                        app:iconTint="#A1A1AA"
+                        app:iconSize="18dp"
+                        app:iconGravity="textStart" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Startup Accordion -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#27272A"
+            app:cardBackgroundColor="#161618"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/startupHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="?selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Startup"
+                        android:textColor="#F4F4F5"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/startupArrow"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_expand_more_24"
+                        android:importantForAccessibility="no" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/startupContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchStartOnBoot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Start automatically on boot"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:minHeight="48dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="Requires root. ApKs will start when you turn on your phone."
+                        android:textColor="#71717A"
+                        android:textSize="12sp"
+                        android:lineSpacingMultiplier="1.3" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- About Accordion -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#27272A"
+            app:cardBackgroundColor="#161618"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/aboutHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="?selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="About"
+                        android:textColor="#F4F4F5"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/aboutArrow"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_expand_more_24"
+                        android:importantForAccessibility="no" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/aboutContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone">
+
+                    <!-- App Info -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:background="#1C1C1E"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:id="@+id/aboutIcon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:importantForAccessibility="no" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/app_name"
+                                android:textColor="#F4F4F5"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/aboutVersion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#A1A1AA"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- What is ApKs -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="What is ApKs?"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ApKs is an APK management tool powered by Shizuku. It allows you to install, uninstall, and manage APK files on your device without needing a computer."
+                        android:textColor="#A1A1AA"
+                        android:textSize="13sp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Developer -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Developer"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Built with care by the ApKs community."
+                        android:textColor="#A1A1AA"
+                        android:textSize="13sp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Credits -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Credits"
+                        android:textColor="#D4D4D8"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Powered by Shizuku by RikkaApps. Icons from Material Design. Built with Android Jetpack and Material 3."
+                        android:textColor="#A1A1AA"
+                        android:textSize="13sp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Shizuku -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnShizuku"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:text="Shizuku by RikkaApps"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46"
+                        app:icon="@drawable/ic_outline_open_in_new_24"
+                        app:iconTint="#A1A1AA"
+                        app:iconSize="18dp"
+                        app:iconGravity="textStart" />
+
+                    <!-- Source Code -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSourceCode"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:text="View source code"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46"
+                        app:icon="@drawable/ic_outline_open_in_new_24"
+                        app:iconTint="#A1A1AA"
+                        app:iconSize="18dp"
+                        app:iconGravity="textStart" />
+
+                    <!-- Portfolio -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnPortfolio"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Portfolio"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46"
+                        app:icon="@drawable/ic_outline_open_in_new_24"
+                        app:iconTint="#A1A1AA"
+                        app:iconSize="18dp"
+                        app:iconGravity="textStart" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -17,9 +17,11 @@ import com.rc.apks.ShizukuSettings
 import com.rc.apks.adb.AdbClient
 import com.rc.apks.adb.AdbKey
 import com.rc.apks.adb.AdbKeyException
+import com.rc.apks.adb.AdbMdns
 import com.rc.apks.adb.PreferenceAdbKeyStore
 import com.rc.apks.app.AppBarActivity
 import com.rc.apks.databinding.StarterActivityBinding
+import com.rc.apks.utils.EnvironmentUtils
 import rikka.lifecycle.Resource
 import rikka.lifecycle.Status
 import rikka.lifecycle.viewModels
@@ -34,7 +36,7 @@ class StarterActivity : AppBarActivity() {
     private val viewModel by viewModels {
         ViewModel(
             this,
-            intent.getBooleanExtra(EXTRA_IS_ROOT, true),
+            intent.getBooleanExtra(EXTRA_IS_ROOT, false),
             intent.getStringExtra(EXTRA_HOST),
             intent.getIntExtra(EXTRA_PORT, 0)
         )
@@ -50,7 +52,7 @@ class StarterActivity : AppBarActivity() {
         setContentView(binding.root)
 
         viewModel.output.observe(this) {
-            val output = it.data!!.trim()
+            val output = it.data?.toString()?.trim() ?: ""
             if (output.endsWith("info: shizuku_starter exit with 0")) {
                 viewModel.appendOutput("")
                 viewModel.appendOutput("Waiting for service...")
@@ -58,11 +60,11 @@ class StarterActivity : AppBarActivity() {
                 Shizuku.addBinderReceivedListener(object : Shizuku.OnBinderReceivedListener {
                     override fun onBinderReceived() {
                         Shizuku.removeBinderReceivedListener(this)
-                        viewModel.appendOutput("Service started, this window will be automatically closed in 3 seconds")
+                        viewModel.appendOutput("Service started successfully! Closing in 2 seconds...")
 
                         window?.decorView?.postDelayed({
                             if (!isFinishing) finish()
-                        }, 3000)
+                        }, 2000)
                     }
                 })
             } else if (it.status == Status.ERROR) {
@@ -101,10 +103,11 @@ class StarterActivity : AppBarActivity() {
     }
 }
 
-private class ViewModel(context: Context, root: Boolean, host: String?, port: Int) : androidx.lifecycle.ViewModel() {
+private class ViewModel(private val context: Context, root: Boolean, host: String?, port: Int) : androidx.lifecycle.ViewModel() {
 
     private val sb = StringBuilder()
     private val _output = MutableLiveData<Resource<StringBuilder>>()
+    private var adbMdns: AdbMdns? = null
 
     val output = _output as LiveData<Resource<StringBuilder>>
 
@@ -113,7 +116,25 @@ private class ViewModel(context: Context, root: Boolean, host: String?, port: In
             if (root) {
                 startRoot()
             } else {
-                startAdb(host!!, port)
+                val effectiveHost = if (host.isNullOrEmpty()) "127.0.0.1" else host
+                var effectivePort = port
+                if (effectivePort <= 0) {
+                    effectivePort = EnvironmentUtils.getAdbTcpPort()
+                }
+
+                if (effectivePort > 0) {
+                    startAdb(effectiveHost, effectivePort)
+                } else {
+                    sb.append("Searching for Wireless Debugging connection...").append('\n')
+                    postResult()
+
+                    adbMdns = AdbMdns(context, AdbMdns.TLS_CONNECT) { discoveredPort ->
+                        if (discoveredPort > 0 && discoveredPort <= 65535) {
+                            adbMdns?.stop()
+                            startAdb(effectiveHost, discoveredPort)
+                        }
+                    }.apply { start() }
+                }
             }
         } catch (e: Throwable) {
             postResult(e)
@@ -143,7 +164,7 @@ private class ViewModel(context: Context, root: Boolean, host: String?, port: In
 
                 postResult()
                 if (!Shell.getShell().isRoot) {
-                    sb.append('\n').append("Still not :(").append('\n')
+                    sb.append('\n').append("Root access not granted.").append('\n')
                     postResult(NotRootedException())
                     return@launch
                 }
@@ -156,7 +177,7 @@ private class ViewModel(context: Context, root: Boolean, host: String?, port: In
                 }
             }).submit {
                 if (it.code != 0) {
-                    sb.append('\n').append("Send this to developer may help solve the problem.")
+                    sb.append('\n').append("Failed to execute root command.")
                     postResult()
                 }
             }
@@ -164,7 +185,7 @@ private class ViewModel(context: Context, root: Boolean, host: String?, port: In
     }
 
     private fun startAdb(host: String, port: Int) {
-        sb.append("Starting with wireless adb in port $port...").append('\n').append('\n')
+        sb.append("Connecting to Wireless ADB on port $port...").append('\n').append('\n')
         postResult()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -180,6 +201,9 @@ private class ViewModel(context: Context, root: Boolean, host: String?, port: In
 
             AdbClient(host, port, key).runCatching {
                 connect()
+                sb.append("Connected! Starting ApKs server...").append('\n')
+                postResult()
+
                 shellCommand(Starter.internalCommand) {
                     sb.append(String(it))
                     postResult()
@@ -192,5 +216,10 @@ private class ViewModel(context: Context, root: Boolean, host: String?, port: In
                 postResult(it)
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        adbMdns?.stop()
     }
 }

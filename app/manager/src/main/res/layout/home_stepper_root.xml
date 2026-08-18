@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="84dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Root Access Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#27272A"
+            app:cardBackgroundColor="#161618"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/shape_circle_icon_background"
+                        android:backgroundTint="#27272A">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_root_24dp"
+                            android:importantForAccessibility="no"
+                            android:tint="#F4F4F5" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Root Access"
+                        android:textColor="#F4F4F5"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/rootStatusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="50dp"
+                    android:text="Root detected. Start the service with full permissions."
+                    android:textColor="#A1A1AA"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.3" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnStartRoot"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginStart="50dp"
+                    android:text="Start with Root"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:backgroundTint="#FFFFFF"
+                    app:cornerRadius="25dp"
+                    app:icon="@drawable/ic_server_start_24dp"
+                    app:iconTint="#000000"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRestartRoot"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="50dp"
+                    android:text="Restart Service"
+                    android:textColor="#D4D4D8"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:backgroundTint="#27272A"
+                    app:cornerRadius="23dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#3F3F46"
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_server_restart"
+                    app:iconTint="#A1A1AA"
+                    app:iconSize="18dp"
+                    app:iconGravity="textStart" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- No Root Warning -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/noRootCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#3F2D20"
+            app:cardBackgroundColor="#1F1812"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Root access is not detected on this device. Please use Wireless Debugging or the PC method instead."
+                    android:textColor="#FBBF24"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.3" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Troubleshooting Accordion -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#27272A"
+            app:cardBackgroundColor="#161618"
+            android:layout_marginTop="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/accordionHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="?selectableItemBackground">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Troubleshooting &amp; Auto-start"
+                        android:textColor="#D4D4D8"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/accordionArrow"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_expand_more_24"
+                        android:importantForAccessibility="no"
+                        android:rotation="0" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/accordionContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="20dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Some battery saver settings may stop background services on startup."
+                        android:textColor="#A1A1AA"
+                        android:textSize="13sp"
+                        android:lineSpacingMultiplier="1.3" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBattery"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Manage Battery Optimization"
+                        android:textColor="#E4E4E7"
+                        android:textSize="13sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:backgroundTint="#27272A"
+                        app:cornerRadius="23dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#3F3F46"
+                        app:icon="@drawable/ic_outline_open_in_new_24"
+                        app:iconTint="#A1A1AA"
+                        app:iconSize="18dp"
+                        app:iconGravity="textStart" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</ScrollView>

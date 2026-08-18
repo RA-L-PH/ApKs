@@ -8,7 +8,9 @@ data class SideloadFile(
     val name: String,
     val packageName: String,
     val versionName: String,
+    val versionCode: Long,
     val sizeText: String,
+    val fileSize: Long,
     val icon: Drawable?,
     val isApks: Boolean,
     var isInstalled: Boolean = false

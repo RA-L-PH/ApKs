@@ -4,6 +4,8 @@ import { FeaturesSection } from './components/FeaturesSection'
 import { HowItWorksSection } from './components/HowItWorksSection'
 import { WhySection } from './components/WhySection'
 import { KeepAndroidOpenBanner } from './components/KeepAndroidOpenBanner'
+import { FaqSection } from './components/FaqSection'
+import { DownloadSection } from './components/DownloadSection'
 import { Footer } from './components/Footer'
 
 export default function App() {
@@ -15,6 +17,8 @@ export default function App() {
       <FeaturesSection />
       <HowItWorksSection />
       <WhySection />
+      <FaqSection />
+      <DownloadSection />
       <Footer />
     </div>
   )

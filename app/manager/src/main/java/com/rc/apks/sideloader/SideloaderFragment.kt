@@ -174,7 +174,11 @@ class SideloaderFragment : Fragment() {
 
     private fun startScan() {
         if (cachedFilesList != null) {
+            val currentInstalled = filesList.associateBy({ it.packageName }, { it.isInstalled })
             filesList.clear()
+            cachedFilesList!!.forEach { file ->
+                file.isInstalled = currentInstalled[file.packageName] ?: file.isInstalled
+            }
             filesList.addAll(cachedFilesList!!)
             filterList()
             binding.progressBar.visibility = View.GONE
@@ -187,6 +191,10 @@ class SideloaderFragment : Fragment() {
 
         lifecycleScope.launch {
             val scanned = scanStorage(requireContext())
+            val currentInstalled = filesList.associateBy({ it.packageName }, { it.isInstalled })
+            scanned.forEach { file ->
+                file.isInstalled = currentInstalled[file.packageName] ?: file.isInstalled
+            }
             filesList.clear()
             filesList.addAll(scanned)
             cachedFilesList = scanned
@@ -237,7 +245,14 @@ class SideloaderFragment : Fragment() {
                                 name = appLabel,
                                 packageName = info.packageName,
                                 versionName = info.versionName ?: "1.0",
+                                versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                    info.longVersionCode
+                                } else {
+                                    @Suppress("DEPRECATION")
+                                    info.versionCode.toLong()
+                                },
                                 sizeText = getReadableSize(file.length()),
+                                fileSize = file.length(),
                                 icon = appIcon,
                                 isApks = false,
                                 isInstalled = isAppInstalled
@@ -310,7 +325,14 @@ class SideloaderFragment : Fragment() {
                         name = "$appLabel (Split)",
                         packageName = info.packageName,
                         versionName = info.versionName ?: "1.0",
+                        versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            info.longVersionCode
+                        } else {
+                            @Suppress("DEPRECATION")
+                            info.versionCode.toLong()
+                        },
                         sizeText = getReadableSize(file.length()),
+                        fileSize = file.length(),
                         icon = appIcon,
                         isApks = true,
                         isInstalled = isAppInstalled
@@ -368,10 +390,8 @@ class SideloaderFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
             if (success) {
                 sideloadFile.isInstalled = true
-                val position = filteredList.indexOf(sideloadFile)
-                if (position >= 0) {
-                    adapter.notifyItemChanged(position)
-                }
+                cachedFilesList = null
+                adapter.notifyDataSetChanged()
                 Toast.makeText(context, "Installation successful!", Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(context, "Installation failed. Check Shizuku connection.", Toast.LENGTH_LONG).show()
@@ -412,10 +432,8 @@ class SideloaderFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
             if (success) {
                 sideloadFile.isInstalled = false
-                val position = filteredList.indexOf(sideloadFile)
-                if (position >= 0) {
-                    adapter.notifyItemChanged(position)
-                }
+                cachedFilesList = null
+                adapter.notifyDataSetChanged()
                 Toast.makeText(context, "Uninstalled successfully!", Toast.LENGTH_LONG).show()
             } else {
                 Toast.makeText(context, "Uninstall failed. Check Shizuku connection.", Toast.LENGTH_LONG).show()
@@ -424,36 +442,22 @@ class SideloaderFragment : Fragment() {
     }
 
     private fun installApkViaShizuku(file: File): Boolean {
-        try {
-            val process = Shizuku.newProcess(
-                arrayOf("pm", "install", "-r", "-S", file.length().toString(), "-"),
-                null,
-                null
+        return try {
+            val output = runProcessWithInput(
+                arrayOf("pm", "install", "-r", "-g", "-S", file.length().toString()),
+                file
             )
-            val out = process.outputStream
-            file.inputStream().use { input ->
-                input.copyTo(out)
-            }
-            out.flush()
-            out.close()
-
-            val reader = BufferedReader(InputStreamReader(process.inputStream))
-            var line: String?
-            var output = ""
-            while (reader.readLine().also { line = it } != null) {
-                output += line + "\n"
-            }
-            process.waitFor()
-            return output.contains("Success", ignoreCase = true) || process.exitValue() == 0
+            android.util.Log.d("SideloaderInstall", "pm install: $output")
+            output.contains("Success", ignoreCase = true)
         } catch (e: Exception) {
-            e.printStackTrace()
-            return false
+            android.util.Log.e("SideloaderInstall", "Install exception", e)
+            false
         }
     }
 
     private fun installApksViaShizuku(file: File): Boolean {
         var zipFile: ZipFile? = null
-        val tempDir = File(requireContext().cacheDir, "apks_extract")
+        val tempDir = File(requireContext().cacheDir, "apks_extract_${System.currentTimeMillis()}")
         if (tempDir.exists()) tempDir.deleteRecursively()
         tempDir.mkdirs()
 
@@ -461,65 +465,149 @@ class SideloaderFragment : Fragment() {
             zipFile = ZipFile(file)
             val entries = zipFile.entries()
             val extractedFiles = mutableListOf<File>()
+            var totalSize = 0L
 
             while (entries.hasMoreElements()) {
                 val entry = entries.nextElement()
-                if (entry.name.endsWith(".apk")) {
-                    val destFile = File(tempDir, entry.name)
+                if (entry.name.endsWith(".apk", ignoreCase = true)) {
+                    val destFile = File(tempDir, File(entry.name).name)
                     zipFile.getInputStream(entry).use { input ->
                         FileOutputStream(destFile).use { output ->
                             input.copyTo(output)
                         }
                     }
                     extractedFiles.add(destFile)
+                    totalSize += destFile.length()
                 }
             }
 
             if (extractedFiles.isEmpty()) return false
 
-            val createProc = Shizuku.newProcess(arrayOf("pm", "install-create"), null, null)
-            val createReader = BufferedReader(InputStreamReader(createProc.inputStream))
-            var createLine: String?
-            var createOutput = ""
-            while (createReader.readLine().also { createLine = it } != null) {
-                createOutput += createLine + "\n"
+            // Step 1: Create install session
+            val createOutput = runProcess(
+                arrayOf("pm", "install-create", "-r", "-g", "-S", totalSize.toString())
+            )
+            android.util.Log.d("SideloaderInstall", "install-create: $createOutput")
+
+            val sessionId = "\\[(\\d+)\\]".toRegex().find(createOutput)?.groupValues?.get(1) ?: run {
+                android.util.Log.e("SideloaderInstall", "Failed to get session ID from: $createOutput")
+                return false
             }
-            createProc.waitFor()
 
-            val sessionId = "\\[(\\d+)\\]".toRegex().find(createOutput)?.groupValues?.get(1) ?: return false
-
-            for (apk in extractedFiles) {
-                val writeProc = Shizuku.newProcess(
-                    arrayOf("pm", "install-write", "-S", apk.length().toString(), sessionId, apk.name, "-"),
-                    null,
-                    null
+            // Step 2: Stream each split APK into the install session
+            for ((index, apk) in extractedFiles.withIndex()) {
+                val writeOutput = runProcessWithInput(
+                    arrayOf("pm", "install-write", "-S", apk.length().toString(), sessionId, "split_$index.apk"),
+                    apk
                 )
-                val out = writeProc.outputStream
-                apk.inputStream().use { input ->
-                    input.copyTo(out)
+                android.util.Log.d("SideloaderInstall", "install-write ${apk.name}: $writeOutput")
+
+                if (!writeOutput.contains("Success", ignoreCase = true)) {
+                    runProcess(arrayOf("pm", "install-abandon", sessionId))
+                    return false
                 }
-                out.flush()
-                out.close()
-                writeProc.waitFor()
             }
 
-            val commitProc = Shizuku.newProcess(arrayOf("pm", "install-commit", sessionId), null, null)
-            val commitReader = BufferedReader(InputStreamReader(commitProc.inputStream))
-            var commitLine: String?
-            var commitOutput = ""
-            while (commitReader.readLine().also { commitLine = it } != null) {
-                commitOutput += commitLine + "\n"
-            }
-            commitProc.waitFor()
+            // Step 3: Commit session
+            val commitOutput = runProcess(arrayOf("pm", "install-commit", sessionId))
+            android.util.Log.d("SideloaderInstall", "install-commit: $commitOutput")
 
-            return commitOutput.contains("Success", ignoreCase = true) || commitProc.exitValue() == 0
+            return commitOutput.contains("Success", ignoreCase = true)
         } catch (e: Exception) {
-            e.printStackTrace()
+            android.util.Log.e("SideloaderInstall", "APKS install exception", e)
             return false
         } finally {
-            zipFile?.close()
+            try { zipFile?.close() } catch (_: Exception) {}
             tempDir.deleteRecursively()
         }
+    }
+
+    private fun runProcess(cmd: Array<String>): String {
+        val process = Shizuku.newProcess(cmd, null, null)
+        val stdout = StringBuilder()
+        val stderr = StringBuilder()
+
+        val stdoutThread = Thread {
+            try {
+                BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        stdout.append(line).append("\n")
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+        val stderrThread = Thread {
+            try {
+                BufferedReader(InputStreamReader(process.errorStream)).use { reader ->
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        stderr.append(line).append("\n")
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+
+        stdoutThread.start()
+        stderrThread.start()
+        process.waitFor()
+        stdoutThread.join(5000)
+        stderrThread.join(5000)
+
+        return "$stdout$stderr"
+    }
+
+    private fun runProcessWithInput(cmd: Array<String>, file: File): String {
+        val process = Shizuku.newProcess(cmd, null, null)
+        val stdout = StringBuilder()
+        val stderr = StringBuilder()
+
+        val stdoutThread = Thread {
+            try {
+                BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        stdout.append(line).append("\n")
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+        val stderrThread = Thread {
+            try {
+                BufferedReader(InputStreamReader(process.errorStream)).use { reader ->
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        stderr.append(line).append("\n")
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+
+        stdoutThread.start()
+        stderrThread.start()
+
+        try {
+            val out = process.outputStream
+            file.inputStream().use { input ->
+                val buffer = ByteArray(8192)
+                var bytesRead: Int
+                while (input.read(buffer).also { bytesRead = it } != -1) {
+                    out.write(buffer, 0, bytesRead)
+                    out.flush()
+                }
+            }
+            out.close()
+        } catch (e: java.io.IOException) {
+            android.util.Log.w("SideloaderInstall", "Pipe broken: ${e.message}")
+        }
+
+        process.waitFor()
+        stdoutThread.join(5000)
+        stderrThread.join(5000)
+
+        val result = "$stdout$stderr"
+        android.util.Log.d("SideloaderInstall", "process result: exit=${process.exitValue()}, output=$result")
+        return result
     }
 
     override fun onDestroyView() {

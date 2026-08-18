@@ -1,6 +1,7 @@
 package com.rc.apks.home
 
 import android.content.Intent
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,6 @@ import com.rc.apks.R
 import com.rc.apks.databinding.HomeItemContainerBinding
 import com.rc.apks.databinding.HomeTerminalBinding
 import com.rc.apks.model.ServiceStatus
-import com.rc.apks.shell.ShellTutorialActivity
 import rikka.recyclerview.BaseViewHolder
 import rikka.recyclerview.BaseViewHolder.Creator
 
@@ -43,6 +43,10 @@ class TerminalViewHolder(private val binding: HomeTerminalBinding, private val r
     }
 
     override fun onClick(v: View) {
-        v.context.startActivity(Intent(v.context, ShellTutorialActivity::class.java))
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            v.context.startActivity(intent)
+        } catch (_: Exception) {}
     }
 }

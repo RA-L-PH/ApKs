@@ -4,4 +4,8 @@
 
     <color name="app_color_light">#3F51B5</color>
     <color name="app_color_dark">#B1B8DF</color>
+
+    <color name="ok">#22C55E</color>
+    <color name="stop">#DC2626</color>
+    <color name="pairing">#D97706</color>
 </resources>
