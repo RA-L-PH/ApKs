@@ -33,6 +33,7 @@ export function DownloadSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:underline"
+                    aria-label="View stable release details on GitHub"
                   >
                     <h3 className="text-sm font-semibold text-white/90">Stable Release (v13.6.0)</h3>
                   </a>
@@ -54,8 +55,9 @@ export function DownloadSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-shrink-0 py-2 px-4 bg-white/10 hover:bg-white/15 text-[11px] font-bold text-white/90 rounded-lg transition-colors border border-white/[0.04] text-center"
+                    aria-label="Download Universal APK"
                   >
-                    Download Universal
+                    Download Universal APK
                   </a>
                 </div>
               </div>
@@ -72,6 +74,7 @@ export function DownloadSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
+                    aria-label="Download arm64-v8a APK"
                   >
                     arm64-v8a
                   </a>
@@ -80,6 +83,7 @@ export function DownloadSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
+                    aria-label="Download armeabi-v7a APK"
                   >
                     armeabi-v7a
                   </a>
@@ -88,6 +92,7 @@ export function DownloadSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
+                    aria-label="Download x86 APK"
                   >
                     x86
                   </a>
@@ -96,6 +101,7 @@ export function DownloadSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-2 px-2 bg-white/[0.04] hover:bg-white/[0.08] text-[10px] font-bold text-white/70 hover:text-white rounded-lg transition-colors border border-white/[0.02] text-center"
+                    aria-label="Download x86_64 APK"
                   >
                     x86_64
                   </a>

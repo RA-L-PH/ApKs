@@ -76,7 +76,7 @@ export function WhySection() {
             rel="noopener noreferrer"
             className="px-4 py-2 bg-white/[0.06] hover:bg-white/[0.1] rounded-full text-xs font-medium text-white/60 hover:text-white/80 transition-colors"
           >
-            Take action
+            Take action to keep Android open
           </a>
           <a
             href="https://linustechtips.com/topic/1636581-android-isnt-open-source-anymore/"
@@ -84,7 +84,7 @@ export function WhySection() {
             rel="noopener noreferrer"
             className="px-4 py-2 bg-white/[0.06] hover:bg-white/[0.1] rounded-full text-xs font-medium text-white/60 hover:text-white/80 transition-colors"
           >
-            Read more
+            Read the Android open-source discussion
           </a>
         </div>
       </div>

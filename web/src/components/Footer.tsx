@@ -23,7 +23,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-xs text-white/30 hover:text-white/50 transition-colors"
             >
-              GitHub
+              GitHub Repository
             </a>
             <a
               href="https://ra-l-ph.pages.dev"
@@ -31,7 +31,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-xs text-white/30 hover:text-white/50 transition-colors"
             >
-              Portfolio
+              Developer Portfolio
             </a>
             <a
               href="https://keepandroidopen.org"

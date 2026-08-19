@@ -49,7 +49,7 @@ export function HeroSection() {
             href="#features"
             className="px-6 py-3 bg-white/10 hover:bg-white/15 rounded-full text-sm font-semibold text-white transition-colors"
           >
-            See what it does
+            Explore ApKs features
           </a>
           <a
             href="https://github.com/RA-L-PH/ApKs"
@@ -57,7 +57,7 @@ export function HeroSection() {
             rel="noopener noreferrer"
             className="px-6 py-3 border border-white/15 hover:border-white/25 hover:bg-white/5 rounded-full text-sm font-semibold text-white/70 hover:text-white transition-colors"
           >
-            Source code
+            View source code on GitHub
           </a>
         </div>
       </div>
